@@ -6,7 +6,7 @@ This repo hold a variaty of methods for converting strings to something else.
 
 ## Data size
 
-Convert strings of type 5MB to:
+Convert strings of type `5MB` to:
 - `DataSize(value int64, unit string)`
 - To bytes (`int64`)
 
