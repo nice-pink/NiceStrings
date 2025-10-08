@@ -1,6 +1,6 @@
 # What
 
-This repo hold a variaty of methods for converting strings to something else.
+This repo holds a variaty of options for converting strings to something else (or the other way around).
 
 # Types
 
