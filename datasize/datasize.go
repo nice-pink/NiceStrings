@@ -52,6 +52,14 @@ func (d *DataSize) ToBytes() int64 {
 	return d.Value
 }
 
+func ToBytes(s string) (int64, error) {
+	ds, err := FromString(s)
+	if err != nil {
+		return 0, err
+	}
+	return ds.ToBytes(), nil
+}
+
 func FromString(s string) (*DataSize, error) {
 	if strings.HasSuffix(s, KB) {
 		return ForSuffix(s, KB)

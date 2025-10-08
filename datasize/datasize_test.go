@@ -453,3 +453,113 @@ func TestDataSize_EdgeCases(t *testing.T) {
 		}
 	})
 }
+
+func TestToBytes_String(t *testing.T) {
+	tests := []struct {
+		name        string
+		input       string
+		expected    int64
+		expectError bool
+	}{
+		{
+			name:        "Valid KB string",
+			input:       "1024KB",
+			expected:    1024 * 1024,
+			expectError: false,
+		},
+		{
+			name:        "Valid MB string",
+			input:       "5MB",
+			expected:    5 * 1024 * 1024,
+			expectError: false,
+		},
+		{
+			name:        "Valid GB string",
+			input:       "2GB",
+			expected:    2 * 1024 * 1024 * 1024,
+			expectError: false,
+		},
+		{
+			name:        "Valid TB string",
+			input:       "1TB",
+			expected:    1 * 1024 * 1024 * 1024 * 1024,
+			expectError: false,
+		},
+		{
+			name:        "Valid PB string",
+			input:       "3PB",
+			expected:    3 * 1024 * 1024 * 1024 * 1024 * 1024,
+			expectError: false,
+		},
+		{
+			name:        "Zero value",
+			input:       "0MB",
+			expected:    0,
+			expectError: false,
+		},
+		{
+			name:        "Large value",
+			input:       "1000GB",
+			expected:    1000 * 1024 * 1024 * 1024,
+			expectError: false,
+		},
+		{
+			name:        "Invalid string - no unit",
+			input:       "1024",
+			expected:    0,
+			expectError: true,
+		},
+		{
+			name:        "Invalid string - unknown unit",
+			input:       "1024EB",
+			expected:    0,
+			expectError: true,
+		},
+		{
+			name:        "Empty string",
+			input:       "",
+			expected:    0,
+			expectError: true,
+		},
+		{
+			name:        "Invalid string - just unit",
+			input:       "KB",
+			expected:    0,
+			expectError: true,
+		},
+		{
+			name:        "Invalid string - non-numeric",
+			input:       "abcMB",
+			expected:    0,
+			expectError: true,
+		},
+		{
+			name:        "Negative value",
+			input:       "-5GB",
+			expected:    -5 * 1024 * 1024 * 1024,
+			expectError: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := ToBytes(tt.input)
+
+			if tt.expectError {
+				if err == nil {
+					t.Errorf("ToBytes() expected error but got none")
+				}
+				if result != 0 {
+					t.Errorf("ToBytes() expected 0 result but got %v", result)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("ToBytes() unexpected error: %v", err)
+				}
+				if result != tt.expected {
+					t.Errorf("ToBytes() = %v, want %v", result, tt.expected)
+				}
+			}
+		})
+	}
+}
